@@ -11,7 +11,7 @@ import pytz
 import os
 from django.http import HttpResponse
 
-API_KEY = "0cde7b31c75864782224f687095aab90"
+API_KEY = ""
 BASE_URL= "https://api.openweathermap.org/data/2.5/"
 
 
@@ -100,7 +100,7 @@ def weatherView(request):
         current_weather = get_current_weather(city)
         css_description = current_weather['description'].split()[0].lower()
         #load data
-        csv_path = ('C:\\Users\\lordm\\Desktop\\я\\Praktyka\\weather predictions\\weather.csv')
+        csv_path = ('\content\weather.csv')
         history_data = read_history(csv_path)
 
         X, Y, lbl = prepare_data(history_data)
