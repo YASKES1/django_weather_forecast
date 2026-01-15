@@ -17,24 +17,33 @@ BASE_URL= "https://api.openweathermap.org/data/2.5/"
 
 #api request to get current weather data
 def get_current_weather(city):
-  url = f"{BASE_URL}weather?q={city}&appid={API_KEY}&units=metric" #api request
-  response = requests.get(url)
-  data = response.json()
-  return {
-      'city' : data['name'],
-      'current_temp' : round(data['main']['temp']),
-      'feels_like': round(data['main']['feels_like']),
-      'temp_min': round(data['main']['temp_min']),
-      'temp_max': round(data['main']['temp_max']),
-      'humidity': round(data['main']['humidity']),
-      'description': data['weather'][0]['description'],
-      'country': data['sys']['country'],
-      'wind_gust_dir' : data['wind']['deg'],
-      'pressure' : data['main']['pressure'],
-      'WindGusSpeed' : data['wind']['speed'],
-      'clouds': data['clouds']['all'],
-      'visibility': data['visibility'],
-  }
+    url = f"{BASE_URL}weather?q={city}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+
+    try:
+        data = response.json()
+    except ValueError:
+        return None, "Błąd odpowiedzi API"
+
+    if response.status_code != 200:
+        return None, data.get("message", "Nieznany błąd API")
+
+    return {
+        'city': data['name'],
+        'country': data['sys']['country'],
+        'current_temp': round(data['main']['temp'], 1),
+        'feels_like': round(data['main']['feels_like'], 1),
+        'temp_min': round(data['main']['temp_min'], 1),
+        'temp_max': round(data['main']['temp_max'], 1),
+        'humidity': round(data['main']['humidity'], 1),
+        'description': data['weather'][0]['description'],
+        'wind_gust_dir': data['wind'].get('deg', 0),
+        'WindGusSpeed': data['wind'].get('speed', 0),
+        'pressure': data['main']['pressure'],
+        'clouds': data['clouds']['all'],
+        'visibility': data.get('visibility', 0),
+        'timezone': data['timezone'],
+    }, None
 
 #reading weather data file
 
